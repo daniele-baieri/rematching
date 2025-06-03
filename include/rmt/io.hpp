@@ -25,6 +25,11 @@ bool ExportMesh(const std::string& Filename,
                 const Eigen::MatrixXd& V,
                 const Eigen::MatrixXi& F);
 
+bool ExportMesh(const std::string& Filename,
+                const Eigen::MatrixXd& V,
+                const Eigen::MatrixXi& F,
+                const Eigen::MatrixXd& Feats);
+
 
 bool ExportWeightmap(const std::string& Filename,
                      const Eigen::SparseMatrix<double>& WM);

@@ -28,7 +28,8 @@
 // };
 // #include <igl/remove_unreferenced.h>
 // #include <igl/remove_duplicate_vertices.h>
-
+#include "polyscope/polyscope.h"
+#include "polyscope/surface_mesh.h"
 
 #include <iostream>
 #include <fstream>
@@ -123,7 +124,13 @@ int main(int argc, const char* const argv[])
     std::cout << "Final samples count is " << VPart.NumSamples() << '.' << std::endl;
     
     /* Compute cluster index for each high-res vertex */
-
+    Eigen::VectorXi PartVec = VPart.GetPartitions();
+    Eigen::MatrixXd FeatVec = PartVec.cast<double>();
+    
+    polyscope::init();
+    polyscope::registerSurfaceMesh("Original Mesh", Mesh.GetVertices(), Mesh.GetTriangles());
+    polyscope::getSurfaceMesh("Original Mesh")->addVertexScalarQuantity("Voronoi Regions", PartVec.cast<double>());
+    polyscope::show();
 
     std::cout << "Reconstructing mesh... ";
     StartTimer();
@@ -136,16 +143,20 @@ int main(int argc, const char* const argv[])
     std::cout << "Elapsed time is " << t << " s." << std::endl;
     std::cout << "Final vertex count is " << VV.rows() << '.' << std::endl;
 
-
-
     std::cout << "Total remeshing time is " << TotTime << " s." << std::endl;
 
-    /* Export high-res mesh with clustering here */
-
-    
     std::cout << "Exporting to " << Args.OutMesh << "... ";
     StartTimer();
     if (!rmt::ExportMesh(Args.OutMesh, VV, FF))
+    {
+        std::cerr << "Cannot write mesh." << std::endl;
+        return -1;
+    }
+    /* Export high-res mesh with clustering here */
+    std::filesystem::path OutPath(Args.OutMesh);
+    std::filesystem::path OutPathPly = (OutPath.parent_path() / OutPath.stem().string()) / "_voronoi.ply";
+    std::cout << OutPathPly.string() << std::endl;
+    if (!rmt::ExportMesh(Args.OutMesh, Mesh.GetVertices(), Mesh.GetTriangles(), FeatVec))
     {
         std::cerr << "Cannot write mesh." << std::endl;
         return -1;
@@ -158,48 +169,6 @@ int main(int argc, const char* const argv[])
         std::cout << "Sampling density is not enough to capture any face. Maybe there are too many connected components?" << std::endl;
         return 0;
     }
-
-    // std::cout << "Computing and exporting the weight map... ";
-    // StartTimer();
-    // std::string WMap = Args.OutMesh;
-    // WMap = WMap.substr(0, WMap.rfind('.')) + ".mat";
-    // auto W = rmt::WeightMap(Mesh.GetVertices(), VV, FF, NVOrig);
-    // rmt::ExportWeightmap(WMap, W);
-    // t = StopTimer();
-    // std::cout << "Elapsed time is " << t << " s." << std::endl;
-
-    /*
-    if (Args.Evaluate)
-    {
-        std::cout << "Evaluating the remeshing... ";
-        StartTimer();
-        Eigen::MatrixXd V = Mesh.GetVertices();
-        rmt::RescaleInsideUnitBox(V);
-        rmt::RescaleInsideUnitBox(VV);
-        auto M = rmt::Evaluate(V, FOrig, VV, FF, nVertsOrig);
-        auto NMG = NonManifoldGeometry(FF);
-        bool IsNM = (NMG.first + NMG.second) > 0;
-        t = StopTimer();
-        std::cout << "Elapsed time is " << t << " s." << std::endl;
-
-        std::cout << "Hausdorff distance: " << M.Hausdorff << std::endl;
-        std::cout << "Chamfer distance:   " << M.Chamfer << std::endl;
-        std::cout << "Triangle area:" << std::endl;
-        std::cout << "    Min: " << M.MinArea << std::endl;
-        std::cout << "    Max: " << M.MaxArea << std::endl;
-        std::cout << "    Avg: " << M.AvgArea << std::endl;
-        std::cout << "    Std: " << M.StdArea << std::endl;
-        std::cout << "Triangle quality:" << std::endl;
-        std::cout << "    Min: " << M.MinQuality << std::endl;
-        std::cout << "    Max: " << M.MaxQuality << std::endl;
-        std::cout << "    Avg: " << M.AvgQuality << std::endl;
-        std::cout << "    Std: " << M.StdQuality << std::endl;
-        std::cout << "Mesh is " << (IsNM ? "non " : "") << "manifold:" << std::endl;
-        std::cout << "    Non-manifold vertices:  " << NMG.first << std::endl;
-        std::cout << "    Non-manifold edges:     " << NMG.second << std::endl;
-    }
-    */
-
 
     std::cout << "Program terminated successfully." << std::endl;
     return 0;

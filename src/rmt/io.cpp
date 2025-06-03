@@ -68,3 +68,23 @@ bool rmt::ExportMesh(const std::string & Filename,
     
     return false;
 }
+
+bool rmt::ExportMesh(const std::string & Filename, 
+                     const Eigen::MatrixXd & V, 
+                     const Eigen::MatrixXi & F,
+                     const Eigen::MatrixXd & Feats)
+{
+    std::string Ext;
+
+    std::filesystem::path OutPath(Filename);
+    std::filesystem::path OutPathPly = OutPath.parent_path() / (OutPath.stem().string() + "_voronoi.ply");
+
+    Eigen::MatrixXd _DummyDouble(0,0);
+    Eigen::MatrixXi _DummyInt(0,0);
+    std::vector<std::string> _dummy_header;
+
+    return igl::writePLY(OutPathPly.string(), V, F, 
+                         _DummyDouble, _DummyDouble, _DummyInt, 
+                         Feats, {"VoronoiRegion"}, _dummy_header);
+
+}

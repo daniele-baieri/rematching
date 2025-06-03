@@ -25,22 +25,6 @@ find_package(Threads REQUIRED)
 
 
 # Add Polyscope to submodules to compile
-
-message("Using Visual Studio compiler flags")
-set(BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
-set(BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-set(BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP") # parallel build
-SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4267\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
-SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4244\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
-SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4305\"")  # ignore truncation on initialization
-SET(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${DISABLED_WARNINGS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-
-add_definitions(/D "_CRT_SECURE_NO_WARNINGS")
-add_definitions(-DNOMINMAX)
-add_definitions(-D_USE_MATH_DEFINES)
-
 add_subdirectory("${CMAKE_SOURCE_DIR}/ext/polyscope")
 
 

@@ -10,7 +10,7 @@ This repository implements the remeshing algorithm presented in *ReMatching: Low
 ## Building instructions
 The building process is entirely carried out with CMake. If you have not already cloned the repository recursively, or if you have not updated the submodules, please run
 ```
-git submodule update --init --recursive --remote
+git submodule update --init --recursive
 ```
 
 For building the project, you need [CMake](https://cmake.org/) and a C++ compiler compliant with [C++17 standard](https://en.cppreference.com/w/cpp/compiler_support/17).  

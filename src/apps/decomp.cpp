@@ -78,7 +78,7 @@ int main(int argc, const char* const argv[])
     std::cout << "Elapsed time is " << t << " s." << std::endl;
     std::cout << "Number of vertices (after repairing):  " << Mesh.NumVertices() << std::endl;
     std::cout << "Number of triangles (after repairing): " << Mesh.NumTriangles() << std::endl;
-    rmt::ExportMesh("repaired.obj", Mesh.GetVertices(), Mesh.GetTriangles());
+    // rmt::ExportMesh("repaired.obj", Mesh.GetVertices(), Mesh.GetTriangles());
 
     int nVertsOrig = Mesh.NumVertices();
     Eigen::MatrixXi FOrig = Mesh.GetTriangles();

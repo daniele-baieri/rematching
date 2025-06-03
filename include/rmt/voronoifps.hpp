@@ -31,6 +31,7 @@ private:
 
 public:
     VoronoiPartitioning(const rmt::Mesh& M);
+    VoronoiPartitioning(const rmt::Mesh& M, int seed);
     VoronoiPartitioning(rmt::VoronoiPartitioning&& VP);
     rmt::VoronoiPartitioning& operator=(rmt::VoronoiPartitioning&& VP);
     ~VoronoiPartitioning();

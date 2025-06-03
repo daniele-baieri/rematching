@@ -27,6 +27,20 @@ rmt::VoronoiPartitioning::VoronoiPartitioning(const rmt::Mesh& M)
     m_HDists = new cut::MinHeap(m_Distances.data(), M.NumVertices(), true);
 }
 
+rmt::VoronoiPartitioning::VoronoiPartitioning(const rmt::Mesh& M, int seed)
+    : m_G(M.GetVertices(), M.GetTriangles())
+{
+    std::mt19937 Eng(seed);
+    std::uniform_int_distribution<int> Distr(0, M.NumVertices() - 1);
+    int FirstSample = Distr(Eng);
+    m_Samples.emplace_back(FirstSample);
+
+    m_Partitions.setConstant(M.NumVertices(), 0);
+    m_G.DijkstraDistance(FirstSample, m_Distances);
+
+    m_HDists = new cut::MinHeap(m_Distances.data(), M.NumVertices(), true);
+}
+
 rmt::VoronoiPartitioning::VoronoiPartitioning(rmt::VoronoiPartitioning&& VP)
     : m_G(std::move(VP.m_G))
 {

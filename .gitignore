@@ -16,3 +16,5 @@ matlab/demo*
 
 # Ignore VSCode settings
 .vscode
+
+data/

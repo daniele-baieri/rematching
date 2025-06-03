@@ -12,3 +12,6 @@
 [submodule "ext/cut"]
 	path = ext/cut
 	url = https://github.com/filthynobleman/cut.git
+[submodule "ext/polyscope"]
+	path = ext/polyscope
+	url = https://github.com/nmwsharp/polyscope.git

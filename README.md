@@ -29,6 +29,11 @@ This will produce the application executables and will install the header and li
 ## Applications
 The building process should produce two executables called `Remesh` and `BatchRemesh`, which operate a remeshing on, respectively, a single mesh or an entire dataset.
 
+### Geodesic Voronoi decomposition
+
+
+
+
 ### Remeshing a single shape
 The `Remesh` application applies the remeshing algorithm to a single 3D model. To run it, please execute the following command
 ```

@@ -164,7 +164,7 @@ void rmt::Mesh::CenterAtOrigin()
 {
     Eigen::MatrixXd BC;
     igl::barycenter(m_V, m_F, BC);
-    Eigen::VectorXd Center = BC.colwise().mean();
+    Eigen::VectorXd Center = -BC.colwise().mean();
     Translate(Center);
 }
 

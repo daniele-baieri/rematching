@@ -22,6 +22,7 @@
 
 #include <igl/is_edge_manifold.h>
 #include <igl/is_vertex_manifold.h>
+#include <igl/doublearea.h>
 // namespace Eigen
 // {
 //     Eigen::internal::all_t all = Eigen::placeholders::all;
@@ -35,6 +36,7 @@
 #include <fstream>
 #include <chrono>
 #include <filesystem>
+#include <cmath>
 
 void StartTimer();
 double StopTimer();
@@ -103,6 +105,13 @@ int ProcessMesh(const std::filesystem::path& File, const rmtArgs& Config) {
     size_t NVManif = Mesh.NumVertices();
     size_t NTManif = Mesh.NumTriangles();
 
+    std::cout << "Normalizing mesh... " << std::endl;
+    Eigen::VectorXd FaceAreas;
+    igl::doublearea(Mesh.GetVertices(), Mesh.GetTriangles(), FaceAreas);
+    Mesh.CenterAtOrigin();
+    double Area = (FaceAreas.array() / 2).sum();
+    Mesh.Scale(1.0 / std::sqrt(Area));
+    
     std::cout << "Computing mesh edges and boundaries... " << std::endl;
     Mesh.ComputeEdgesAndBoundaries();
 

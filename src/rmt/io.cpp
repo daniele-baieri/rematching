@@ -82,6 +82,6 @@ bool rmt::ExportMesh(const std::string & Filename,
 
     return igl::writePLY(Filename, V, F, 
                          _DummyDouble, _DummyDouble, _DummyInt, 
-                         Feats, {"VoronoiRegion"}, _dummy_header);
+                         Feats, {"VoronoiRegion", "IsCenter"}, _dummy_header);
 
 }

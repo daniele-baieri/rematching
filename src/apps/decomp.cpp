@@ -131,8 +131,14 @@ int ProcessMesh(const std::filesystem::path& File, const rmtArgs& Config) {
     size_t NVRefined = VPart.NumSamples();
     
     /* Compute cluster index for each high-res vertex */
-    Eigen::VectorXi PartVec = VPart.GetPartitions();
-    Eigen::MatrixXd FeatVec = PartVec.cast<double>();
+    Eigen::VectorXd PartVec = VPart.GetPartitions().cast<double>();
+    Eigen::VectorXd Centers = Eigen::VectorXd::Zero(PartVec.rows());
+    auto VSamples = VPart.GetSamples();
+    for (auto ptr = VSamples.begin(); ptr != VSamples.end(); ptr++) {
+        Centers(*ptr) = 1.0;
+    }
+    Eigen::MatrixXd FeatVec(PartVec.rows(), 2);
+    FeatVec << PartVec, Centers;
     
     if (Config.Visualize) {
         polyscope::registerSurfaceMesh("Original Mesh", Mesh.GetVertices(), Mesh.GetTriangles());
